@@ -40,11 +40,18 @@ type ManagedCustomerService struct {
 	Auth
 }
 
+type managedCustomerOperation struct {
+	Action          string          `xml:"https://adwords.google.com/api/adwords/cm/v201809 operator"`
+	ManagedCustomer ManagedCustomer `xml:"operand"`
+}
+
 func NewManagedCustomerService(auth *Auth) *ManagedCustomerService {
 	return &ManagedCustomerService{Auth: *auth}
 }
 
-func (s *ManagedCustomerService) Get(selector Selector) (managedCustomerPage ManagedCustomerPage, totalCount int64, err error) {
+func (s *ManagedCustomerService) Get(
+	selector Selector,
+) (managedCustomerPage ManagedCustomerPage, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseMcmUrl, "serviceSelector"}
 	respBody, err := s.Auth.request(
 		managedCustomerServiceUrl,
@@ -71,12 +78,9 @@ func (s *ManagedCustomerService) Get(selector Selector) (managedCustomerPage Man
 	return getResp, totalCount, nil
 }
 
-func (s *ManagedCustomerService) Mutate(managedCustomerOperations ManagedCustomerOperations) (managedCustomers []ManagedCustomer, err error) {
-	type managedCustomerOperation struct {
-		Action          string          `xml:"https://adwords.google.com/api/adwords/cm/v201809 operator"`
-		ManagedCustomer ManagedCustomer `xml:"operand"`
-	}
-
+func (s *ManagedCustomerService) Mutate(
+	managedCustomerOperations ManagedCustomerOperations,
+) (managedCustomers []ManagedCustomer, err error) {
 	operations := []managedCustomerOperation{}
 	for action, managedCustomers := range managedCustomerOperations {
 		for _, managedCustomer := range managedCustomers {
@@ -89,29 +93,55 @@ func (s *ManagedCustomerService) Mutate(managedCustomerOperations ManagedCustome
 		}
 	}
 
+	return s.executeAction("mutate", operations)
+}
+
+func (s *ManagedCustomerService) MutateLink(
+	managedCustomerOperations ManagedCustomerOperations,
+) (managedCustomers []ManagedCustomer, err error) {
+	operations := []managedCustomerOperation{}
+	for action, managedCustomers := range managedCustomerOperations {
+		for _, managedCustomer := range managedCustomers {
+			operations = append(operations,
+				managedCustomerOperation{
+					Action:          action,
+					ManagedCustomer: managedCustomer,
+				},
+			)
+		}
+	}
+
+	return s.executeAction("mutate_link", operations)
+}
+
+func (s *ManagedCustomerService) executeAction(
+	actionName string,
+	operations []managedCustomerOperation,
+) (managedCustomers []ManagedCustomer, err error) {
 	mutation := struct {
 		XMLName xml.Name
 		Ops     []managedCustomerOperation `xml:"operations"`
 	}{
-		XMLName: xml.Name{
-			Space: baseMcmUrl,
-			Local: "mutate",
-		},
-		Ops: operations,
+		XMLName: xml.Name{Space: baseMcmUrl, Local: actionName},
+		Ops:     operations,
 	}
 
-	respBody, err := s.Auth.request(managedCustomerServiceUrl, "mutate", mutation)
+	respBody, err := s.Auth.request(
+		managedCustomerServiceUrl,
+		actionName,
+		mutation,
+	)
 	if err != nil {
 		return managedCustomers, err
 	}
 
-	mutateResp := struct {
+	response := struct {
 		ManagedCustomers []ManagedCustomer `xml:"rval>value"`
 	}{}
-	err = xml.Unmarshal([]byte(respBody), &mutateResp)
+	err = xml.Unmarshal([]byte(respBody), &response)
 	if err != nil {
 		return managedCustomers, err
 	}
 
-	return mutateResp.ManagedCustomers, err
+	return response.ManagedCustomers, err
 }
