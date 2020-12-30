@@ -134,7 +134,7 @@ func (s *ManagedCustomerService) MutateLink(
 	}
 
 	operations := []managedCustomerOperation{}
-	for action, managedCustomerLinks := range managedCustomerOperations {
+	for action, managedCustomerLinks := range managedCustomerLinkOperations {
 		for _, managedCustomer := range managedCustomerLinks {
 			operations = append(operations,
 				managedCustomerOperation{
@@ -151,18 +151,18 @@ func (s *ManagedCustomerService) MutateLink(
 	}{
 		XMLName: xml.Name{
 			Space: baseMcmUrl,
-			Local: "mutate_link",
+			Local: "mutateLink",
 		},
 		Ops: operations,
 	}
 
 	respBody, err := s.Auth.request(
 		managedCustomerServiceUrl,
-		"mutate_link",
+		"mutateLink",
 		mutation,
 	)
 	if err != nil {
-		return managedCustomers, err
+		return managedCustomerLinks, err
 	}
 
 	mutateResp := struct {
@@ -170,7 +170,7 @@ func (s *ManagedCustomerService) MutateLink(
 	}{}
 	err = xml.Unmarshal([]byte(respBody), &mutateResp)
 	if err != nil {
-		return managedCustomers, err
+		return managedCustomerLinks, err
 	}
 
 	return mutateResp.ManagedCustomerLinks, err
