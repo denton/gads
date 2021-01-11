@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
@@ -42,47 +43,130 @@ var (
 var (
 
 	// service urls
-	adGroupAdServiceUrl               = ServiceUrl{baseUrl, "AdGroupAdService"}
-	adGroupBidModifierServiceUrl      = ServiceUrl{baseUrl, "AdGroupBidModifierService"}
-	adGroupCriterionServiceUrl        = ServiceUrl{baseUrl, "AdGroupCriterionService"}
-	adGroupExtensionSettingServiceUrl = ServiceUrl{baseUrl, "AdGroupExtensionSettingService"}
-	adGroupFeedServiceUrl             = ServiceUrl{baseUrl, "AdGroupFeedService"}
-	adGroupServiceUrl                 = ServiceUrl{baseUrl, "AdGroupService"}
-	adParamServiceUrl                 = ServiceUrl{baseUrl, "AdParamService"}
-	adwordsUserListServiceUrl         = ServiceUrl{baseRemarketingUrl, "AdwordsUserListService"}
-	batchJobServiceUrl                = ServiceUrl{baseUrl, "BatchJobService"}
-	biddingStrategyServiceUrl         = ServiceUrl{baseUrl, "BiddingStrategyService"}
-	budgetOrderServiceUrl             = ServiceUrl{baseUrl, "BudgetOrderService"}
-	budgetServiceUrl                  = ServiceUrl{baseUrl, "BudgetService"}
-	campaignBidModifierUrl            = ServiceUrl{baseUrl, "CampaignBidModifierService"}
-	campaignExtensionSettingUrl       = ServiceUrl{baseUrl, "CampaignExtensionSettingService"}
-	campaignCriterionServiceUrl       = ServiceUrl{baseUrl, "CampaignCriterionService"}
-	campaignFeedServiceUrl            = ServiceUrl{baseUrl, "CampaignFeedService"}
-	campaignServiceUrl                = ServiceUrl{baseUrl, "CampaignService"}
-	campaignSharedSetServiceUrl       = ServiceUrl{baseUrl, "CampaignSharedSetService"}
-	constantDataServiceUrl            = ServiceUrl{baseUrl, "ConstantDataService"}
-	conversionTrackerServiceUrl       = ServiceUrl{baseUrl, "ConversionTrackerService"}
-	customerFeedServiceUrl            = ServiceUrl{baseUrl, "CustomerFeedService"}
-	customerServiceUrl                = ServiceUrl{baseMcmUrl, "CustomerService"}
-	customerSyncServiceUrl            = ServiceUrl{baseSyncUrl, "CustomerSyncService"}
-	dataServiceUrl                    = ServiceUrl{baseUrl, "DataService"}
-	experimentServiceUrl              = ServiceUrl{baseUrl, "ExperimentService"}
-	feedItemServiceUrl                = ServiceUrl{baseUrl, "FeedItemService"}
-	feedMappingServiceUrl             = ServiceUrl{baseUrl, "FeedMappingService"}
-	feedServiceUrl                    = ServiceUrl{baseUrl, "FeedService"}
-	geoLocationServiceUrl             = ServiceUrl{baseUrl, "GeoLocationService"}
-	labelServiceUrl                   = ServiceUrl{baseUrl, "LabelService"}
-	locationCriterionServiceUrl       = ServiceUrl{baseUrl, "LocationCriterionService"}
-	managedCustomerServiceUrl         = ServiceUrl{baseMcmUrl, "ManagedCustomerService"}
-	mediaServiceUrl                   = ServiceUrl{baseUrl, "MediaService"}
-	mutateJobServiceUrl               = ServiceUrl{baseUrl, "MutateJobService"}
-	offlineConversionFeedServiceUrl   = ServiceUrl{baseUrl, "OfflineConversionFeedService"}
-	reportDefinitionServiceUrl        = ServiceUrl{baseUrl, "ReportDefinitionService"}
-	reportDownloadServiceUrl          = ServiceUrl{baseReportDownloadUrl, ""}
-	sharedCriterionServiceUrl         = ServiceUrl{baseUrl, "SharedCriterionService"}
-	sharedSetServiceUrl               = ServiceUrl{baseUrl, "SharedSetService"}
-	targetingIdeaServiceUrl           = ServiceUrl{baseTrafficUrl, "TargetingIdeaService"}
-	trafficEstimatorServiceUrl        = ServiceUrl{baseTrafficUrl, "TrafficEstimatorService"}
+	adGroupAdServiceUrl          = ServiceUrl{baseUrl, "AdGroupAdService"}
+	adGroupBidModifierServiceUrl = ServiceUrl{
+		baseUrl,
+		"AdGroupBidModifierService",
+	}
+	adGroupCriterionServiceUrl = ServiceUrl{
+		baseUrl,
+		"AdGroupCriterionService",
+	}
+	adGroupExtensionSettingServiceUrl = ServiceUrl{
+		baseUrl,
+		"AdGroupExtensionSettingService",
+	}
+	adGroupFeedServiceUrl = ServiceUrl{
+		baseUrl,
+		"AdGroupFeedService",
+	}
+	adGroupServiceUrl         = ServiceUrl{baseUrl, "AdGroupService"}
+	adParamServiceUrl         = ServiceUrl{baseUrl, "AdParamService"}
+	adwordsUserListServiceUrl = ServiceUrl{
+		baseRemarketingUrl,
+		"AdwordsUserListService",
+	}
+	batchJobServiceUrl        = ServiceUrl{baseUrl, "BatchJobService"}
+	biddingStrategyServiceUrl = ServiceUrl{
+		baseUrl,
+		"BiddingStrategyService",
+	}
+	budgetOrderServiceUrl = ServiceUrl{
+		baseUrl,
+		"BudgetOrderService",
+	}
+	budgetServiceUrl       = ServiceUrl{baseUrl, "BudgetService"}
+	campaignBidModifierUrl = ServiceUrl{
+		baseUrl,
+		"CampaignBidModifierService",
+	}
+	campaignExtensionSettingUrl = ServiceUrl{
+		baseUrl,
+		"CampaignExtensionSettingService",
+	}
+	campaignCriterionServiceUrl = ServiceUrl{
+		baseUrl,
+		"CampaignCriterionService",
+	}
+	campaignFeedServiceUrl = ServiceUrl{
+		baseUrl,
+		"CampaignFeedService",
+	}
+	campaignServiceUrl          = ServiceUrl{baseUrl, "CampaignService"}
+	campaignSharedSetServiceUrl = ServiceUrl{
+		baseUrl,
+		"CampaignSharedSetService",
+	}
+	constantDataServiceUrl = ServiceUrl{
+		baseUrl,
+		"ConstantDataService",
+	}
+	conversionTrackerServiceUrl = ServiceUrl{
+		baseUrl,
+		"ConversionTrackerService",
+	}
+	customerFeedServiceUrl = ServiceUrl{
+		baseUrl,
+		"CustomerFeedService",
+	}
+	customerServiceUrl = ServiceUrl{
+		baseMcmUrl,
+		"CustomerService",
+	}
+	customerSyncServiceUrl = ServiceUrl{
+		baseSyncUrl,
+		"CustomerSyncService",
+	}
+	dataServiceUrl        = ServiceUrl{baseUrl, "DataService"}
+	experimentServiceUrl  = ServiceUrl{baseUrl, "ExperimentService"}
+	feedItemServiceUrl    = ServiceUrl{baseUrl, "FeedItemService"}
+	feedMappingServiceUrl = ServiceUrl{
+		baseUrl,
+		"FeedMappingService",
+	}
+	feedServiceUrl        = ServiceUrl{baseUrl, "FeedService"}
+	geoLocationServiceUrl = ServiceUrl{
+		baseUrl,
+		"GeoLocationService",
+	}
+	labelServiceUrl             = ServiceUrl{baseUrl, "LabelService"}
+	locationCriterionServiceUrl = ServiceUrl{
+		baseUrl,
+		"LocationCriterionService",
+	}
+	managedCustomerServiceUrl = ServiceUrl{
+		baseMcmUrl,
+		"ManagedCustomerService",
+	}
+	mediaServiceUrl                 = ServiceUrl{baseUrl, "MediaService"}
+	mutateJobServiceUrl             = ServiceUrl{baseUrl, "MutateJobService"}
+	offlineConversionFeedServiceUrl = ServiceUrl{
+		baseUrl,
+		"OfflineConversionFeedService",
+	}
+	reportDefinitionServiceUrl = ServiceUrl{
+		baseUrl,
+		"ReportDefinitionService",
+	}
+	reportDownloadServiceUrl  = ServiceUrl{baseReportDownloadUrl, ""}
+	sharedCriterionServiceUrl = ServiceUrl{
+		baseUrl,
+		"SharedCriterionService",
+	}
+	sharedSetServiceUrl     = ServiceUrl{baseUrl, "SharedSetService"}
+	targetingIdeaServiceUrl = ServiceUrl{
+		baseTrafficUrl,
+		"TargetingIdeaService",
+	}
+	trafficEstimatorServiceUrl = ServiceUrl{
+		baseTrafficUrl,
+		"TrafficEstimatorService",
+	}
+)
+var (
+	knownErrors = []string{
+		"AuthorizationError.CUSTOMER_NOT_ACTIVE",
+	}
 )
 
 func (s ServiceUrl) String() string {
@@ -177,7 +261,11 @@ func selectorError() (err error) {
 	return err
 }
 
-func (a *Auth) do(serviceUrl ServiceUrl, action string, body, ret interface{}) error {
+func (a *Auth) do(
+	serviceUrl ServiceUrl,
+	action string,
+	body, ret interface{},
+) error {
 	raw, err := a.doRequest(serviceUrl, action, body)
 	if err != nil {
 		return err
@@ -198,7 +286,11 @@ func (a *Auth) do(serviceUrl ServiceUrl, action string, body, ret interface{}) e
 	return nil
 }
 
-func (a *Auth) request(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func (a *Auth) request(
+	serviceUrl ServiceUrl,
+	action string,
+	body interface{},
+) (respBody []byte, err error) {
 	return a.doRequest(serviceUrl, action, body)
 }
 
@@ -210,21 +302,45 @@ func SetCacheToken(t string) {
 	tokenForCache = t
 }
 
-func (a *Auth) doRequest(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
-	timeout := time.Second * 5
-	retries := 4
-retry:
-	result, err := a.doRequestFunc(serviceUrl, action, body)
-	if err != nil && retries > 0 {
-		retries--
-		time.Sleep(timeout)
-		//timeout += 5 * time.Second
-		goto retry
+func (a *Auth) doRequest(
+	serviceUrl ServiceUrl,
+	action string,
+	body interface{},
+) (respBody []byte, err error) {
+	var result []byte
+
+	for i := 3; i >= 0; i-- {
+		result, err := a.doRequestFunc(serviceUrl, action, body)
+		if err != nil {
+			if isKnownError(err) {
+				return result, err
+			}
+
+			if i > 0 {
+				time.Sleep(time.Second * 5)
+			}
+		} else {
+			return result, err
+		}
 	}
 	return result, err
 }
 
-func (a *Auth) doRequestFunc(serviceUrl ServiceUrl, action string, body interface{}) (respBody []byte, err error) {
+func isKnownError(err error) bool {
+	errorText := err.Error()
+	for _, v := range knownErrors {
+		if strings.Contains(errorText, v) {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *Auth) doRequestFunc(
+	serviceUrl ServiceUrl,
+	action string,
+	body interface{},
+) (respBody []byte, err error) {
 
 	startTime := time.Now()
 
@@ -267,9 +383,12 @@ func (a *Auth) doRequestFunc(serviceUrl ServiceUrl, action string, body interfac
 
 	reqBody, err := xml.MarshalIndent(
 		soapReqEnvelope{
-			XMLName: xml.Name{"http://schemas.xmlsoap.org/soap/envelope/", "Envelope"},
-			Header:  reqHead,
-			Body:    soapReqBody{body},
+			XMLName: xml.Name{
+				"http://schemas.xmlsoap.org/soap/envelope/",
+				"Envelope",
+			},
+			Header: reqHead,
+			Body:   soapReqBody{body},
 		},
 		"  ", "  ")
 	if err != nil {
@@ -352,7 +471,11 @@ func (a *Auth) doRequestFunc(serviceUrl ServiceUrl, action string, body interfac
 	}
 
 	if a.Testing != nil {
-		a.Testing.Logf("respBody ->\n%s\n%s\n", string(respBody), fmt.Sprintf("%d", respStatusCode))
+		a.Testing.Logf(
+			"respBody ->\n%s\n%s\n",
+			string(respBody),
+			fmt.Sprintf("%d", respStatusCode),
+		)
 	}
 
 	type soapRespHeader struct {
@@ -377,7 +500,8 @@ func (a *Auth) doRequestFunc(serviceUrl ServiceUrl, action string, body interfac
 	if err != nil {
 		return respBody, err
 	}
-	if respStatusCode == 400 || respStatusCode == 401 || respStatusCode == 403 || respStatusCode == 405 || respStatusCode == 500 {
+	if respStatusCode == 400 || respStatusCode == 401 || respStatusCode == 403 || respStatusCode == 405 ||
+		respStatusCode == 500 {
 		fault := Fault{}
 		err = xml.Unmarshal(soapResp.Body.Response, &fault)
 		if err != nil {
@@ -386,7 +510,10 @@ func (a *Auth) doRequestFunc(serviceUrl ServiceUrl, action string, body interfac
 
 		for i := range fault.Errors.ApiExceptionFaults {
 			switch fault.Errors.ApiExceptionFaults[i].ErrorsType {
-			case "AuthenticationError", "RateExceededError", "DatabaseError", "InternalApiError":
+			case "AuthenticationError",
+				"RateExceededError",
+				"DatabaseError",
+				"InternalApiError":
 				return soapResp.Body.Response, &baseError{
 					code:    fault.Errors.ApiExceptionFaults[i].Reason,
 					origErr: &fault.Errors,
