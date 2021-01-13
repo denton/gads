@@ -164,9 +164,7 @@ var (
 	}
 )
 var (
-	knownErrors = []string{
-		"AuthorizationError.CUSTOMER_NOT_ACTIVE",
-	}
+	knownErrors = []string{}
 )
 
 func (s ServiceUrl) String() string {
@@ -312,7 +310,7 @@ func (a *Auth) doRequest(
 	for i := 3; i >= 0; i-- {
 		result, err := a.doRequestFunc(serviceUrl, action, body)
 		if err != nil {
-			if isKnownError(err) {
+			if !isShouldRetry(err) {
 				return result, err
 			}
 
@@ -326,7 +324,7 @@ func (a *Auth) doRequest(
 	return result, err
 }
 
-func isKnownError(err error) bool {
+func isShouldRetry(err error) bool {
 	errorText := err.Error()
 	for _, v := range knownErrors {
 		if strings.Contains(errorText, v) {
