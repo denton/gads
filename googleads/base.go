@@ -165,7 +165,7 @@ var (
 )
 var (
 	knownErrors = []string{
-		"InternalApiError.UNEXPECTED_INTERNAL_API_ERROR"
+		"InternalApiError.UNEXPECTED_INTERNAL_API_ERROR",
 	}
 )
 
