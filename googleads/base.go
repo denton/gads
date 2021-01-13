@@ -164,7 +164,9 @@ var (
 	}
 )
 var (
-	knownErrors = []string{}
+	knownErrors = []string{
+		"InternalApiError.UNEXPECTED_INTERNAL_API_ERROR"
+	}
 )
 
 func (s ServiceUrl) String() string {
