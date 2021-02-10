@@ -48,10 +48,25 @@ func NewCredentialsFromFile(pathToFile string) (ac AuthConfig, err error) {
 	return ac, err
 }
 
-func NewCredentialsFromParams(creds Credentials) (config AuthConfig, err error) {
+func NewCredentialsFromJSON(data string) (ac AuthConfig, err error) {
+	ctx := context.TODO()
+	if err := json.Unmarshal([]byte(data), &ac); err != nil {
+		return ac, err
+	}
+	ac.tokenSource = ac.OAuth2Config.TokenSource(ctx, ac.OAuth2Token)
+	ac.Auth.Client = ac.OAuth2Config.Client(ctx, ac.OAuth2Token)
+	return ac, err
+}
+
+func NewCredentialsFromParams(
+	creds Credentials,
+) (config AuthConfig, err error) {
 	var gcfg AuthConfig
 
-	expiresAt, _ := time.Parse(time.RFC3339, "2015-07-28T14:51:53.543430418-04:00")
+	expiresAt, _ := time.Parse(
+		time.RFC3339,
+		"2015-07-28T14:51:53.543430418-04:00",
+	)
 
 	// Create a token
 	gcfg.OAuth2Token = &oauth2.Token{
