@@ -166,7 +166,7 @@ var (
 var (
 	knownErrors = []string{
 		"InternalApiError.UNEXPECTED_INTERNAL_API_ERROR",
-		"Service Unavailable"
+		"Service Unavailable",
 	}
 )
 
