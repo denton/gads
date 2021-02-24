@@ -13,6 +13,7 @@ type ManagedCustomer struct {
 	TestAccount           bool           `xml:"testAccount,omitempty"`
 	AccountLabels         []AccountLabel `xml:"accountLabels,omitempty"`
 	ExcludeHiddenAccounts bool           `xml:"excludeHiddenAccounts,omitempty"`
+	AutoTaggingEnabled    bool           `xml:"autoTaggingEnabled,omitempty"`
 }
 
 type ManagedCustomerLink struct {
