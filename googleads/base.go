@@ -19,6 +19,8 @@ const (
 	version               = "v201809"
 	rootUrl               = "https://adwords.google.com/api/adwords/cm/"
 	baseUrl               = "https://adwords.google.com/api/adwords/cm/" + version
+	rootBillingUrl        = "https://adwords.google.com/api/adwords/billing/"
+	baseBillingUrl        = "https://adwords.google.com/api/adwords/billing/" + version
 	rootMcmUrl            = "https://adwords.google.com/api/adwords/mcm/"
 	baseMcmUrl            = "https://adwords.google.com/api/adwords/mcm/" + version
 	rootRemarketingUrl    = "https://adwords.google.com/api/adwords/rm/"
@@ -71,10 +73,7 @@ var (
 		baseUrl,
 		"BiddingStrategyService",
 	}
-	budgetOrderServiceUrl = ServiceUrl{
-		baseUrl,
-		"BudgetOrderService",
-	}
+	budgetOrderServiceUrl  = ServiceUrl{baseBillingUrl, "BudgetOrderService"}
 	budgetServiceUrl       = ServiceUrl{baseUrl, "BudgetService"}
 	campaignBidModifierUrl = ServiceUrl{
 		baseUrl,
@@ -217,7 +216,7 @@ type Paging struct {
 
 type Selector struct {
 	XMLName    xml.Name
-	Fields     []string    `xml:"fields"`
+	Fields     []string    `xml:"fields,omitempty"`
 	Predicates []Predicate `xml:"predicates"`
 	DateRange  *DateRange  `xml:"dateRange,omitempty"`
 	Ordering   []OrderBy   `xml:"ordering"`

@@ -38,7 +38,9 @@ func budgetError() (err error) {
 }
 
 // Get returns budgets matching a given selector and the total count of matching budgets.
-func (s *BudgetService) Get(selector Selector) (budgets []Budget, totalCount int64, err error) {
+func (s *BudgetService) Get(
+	selector Selector,
+) (budgets []Budget, totalCount int64, err error) {
 	selector.XMLName = xml.Name{baseUrl, "selector"}
 	respBody, err := s.Auth.request(
 		budgetServiceUrl,
@@ -69,7 +71,9 @@ func (s *BudgetService) Get(selector Selector) (budgets []Budget, totalCount int
 }
 
 // Mutate takes a budgetOperations and creates, modifies or destroys the associated budgets.
-func (s *BudgetService) Mutate(budgetOperations BudgetOperations) (budgets []Budget, err error) {
+func (s *BudgetService) Mutate(
+	budgetOperations BudgetOperations,
+) (budgets []Budget, err error) {
 	type budgetOperation struct {
 		Action string `xml:"operator"`
 		Budget Budget `xml:"operand"`
