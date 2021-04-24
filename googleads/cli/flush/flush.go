@@ -2,10 +2,10 @@ package main
 
 import (
 	"crypto/rand"
+	"flag"
 	"log"
 
-	gads "github.com/Getsidecar/gads/v201710"
-	"golang.org/x/oauth2"
+	gads "github.com/denton/gads/googleads"
 )
 
 func rand_str(str_size int) string {
@@ -18,14 +18,16 @@ func rand_str(str_size int) string {
 	return string(bytes)
 }
 
+var configJson = flag.String("oauth", "./oauth.json", "API credentials")
+
 func main() {
-	config, err := gads.NewCredentials(oauth2.NoContext)
+	config, err := gads.NewCredentialsFromFile(*configJson)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ags := gads.NewAdGroupService(config.Auth)
-	foundAdGroups, err := ags.Get(
+	ags := gads.NewAdGroupService(&config.Auth)
+	foundAdGroups, _, err := ags.Get(
 		gads.Selector{
 			Fields: []string{
 				"Id",
@@ -50,8 +52,8 @@ func main() {
 	_, err = ags.Mutate(gads.AdGroupOperations{"SET": foundAdGroups})
 
 	// Remove all Campaigns
-	cs := gads.NewCampaignService(config.Auth)
-	foundCampaigns, err := cs.Get(
+	cs := gads.NewCampaignService(&config.Auth)
+	foundCampaigns, _, err := cs.Get(
 		gads.Selector{
 			Fields: []string{
 				"Id",
@@ -82,8 +84,8 @@ func main() {
 	}
 
 	// Remove all budgets
-	bs := gads.NewBudgetService(config.Auth)
-	foundBudgets, err := bs.Get(gads.Selector{Fields: []string{"BudgetId", "BudgetName", "Period", "Amount", "DeliveryMethod"}})
+	bs := gads.NewBudgetService(&config.Auth)
+	foundBudgets, _, err := bs.Get(gads.Selector{Fields: []string{"BudgetId", "BudgetName", "Period", "Amount", "DeliveryMethod"}})
 	if err != nil {
 		log.Fatal(err)
 	}

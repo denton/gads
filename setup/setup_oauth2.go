@@ -8,7 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 
-	gads "github.com/Getsidecar/gads/v201710"
+	gads "github.com/denton/gads/googleads"
+
 	"github.com/toqueteos/webbrowser"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

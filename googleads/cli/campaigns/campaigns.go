@@ -2,15 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 
-	gads "github.com/Getsidecar/gads/v201710"
-	"golang.org/x/oauth2"
+	gads "github.com/denton/gads/googleads"
 )
 
+var configJson = flag.String("oauth", "./oauth.json", "API credentials")
+
 func main() {
-	config, err := gads.NewCredentials(oauth2.NoContext)
+	config, err := gads.NewCredentialsFromFile(*configJson)
 	if err != nil {
 		log.Fatal(err)
 	}

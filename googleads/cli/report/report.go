@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	gads "github.com/Getsidecar/gads/v201710"
+	gads "github.com/denton/gads/googleads"
 )
 
 var configJson = flag.String("oauth", "./oauth.json", "API credentials")
