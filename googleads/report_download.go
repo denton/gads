@@ -12,6 +12,7 @@ import (
 
 type ReportDownloadService struct {
 	Auth
+	IncludeZeroImpressions bool
 }
 
 type reportDefinitionXml struct {
@@ -117,6 +118,9 @@ func (s *ReportDownloadService) makeRequest(form url.Values) (res *http.Response
 	req.Header.Add("clientCustomerId", s.Auth.CustomerId)
 	req.Header.Add("skipReportHeader", "true")
 	req.Header.Add("skipReportSummary", "true")
+	if s.IncludeZeroImpressions {
+		req.Header.Add("includeZeroImpressions", "true")
+	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	return s.Client.Do(req)
 }
