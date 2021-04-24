@@ -14,8 +14,8 @@ type AppUrl struct {
 }
 
 type AdStrengthInfo struct {
-	adStrength  string   `xml:"adStrength"`
-	actionItems []string `xml:"actionItems"`
+	AdStrength  string   `xml:"adStrength"`
+	ActionItems []string `xml:"actionItems"`
 }
 
 type CallOnlyAd struct {
@@ -97,7 +97,7 @@ type Asset struct {
 	AssetId      int64  `xml:"assetId"`
 	AssetName    string `xml:"assetName"`
 	AssetSubtype string `xml:"assetSubtype"`
-	assetStatus  string `xml:"assetStatus"`
+	AssetStatus  string `xml:"assetStatus"`
 	Type         string `xml:"type"`
 }
 
@@ -198,11 +198,17 @@ type BatchExpandedTextAdInner struct {
 }
 
 func (ad BatchExpandedTextAd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Attr = []xml.Attr{xml.Attr{Value: "operand"}}
+	start.Attr = []xml.Attr{{Value: "operand"}}
 	e.EncodeToken(start)
 
-	e.EncodeElement(ad.Id, xml.StartElement{Name: xml.Name{"", "id"}})
-	e.EncodeElement(ad.AdGroupId, xml.StartElement{Name: xml.Name{"", "adGroupId"}})
+	e.EncodeElement(ad.Id, xml.StartElement{
+		Name: xml.Name{Space: "", Local: "id"},
+		Attr: []xml.Attr{},
+	})
+	e.EncodeElement(
+		ad.AdGroupId,
+		xml.StartElement{Name: xml.Name{Space: "", Local: "adGroupId"}},
+	)
 	e.EncodeElement(BatchExpandedTextAdInner{
 		HeadlinePart1:       ad.HeadlinePart1,
 		HeadlinePart2:       ad.HeadlinePart2,
@@ -210,23 +216,27 @@ func (ad BatchExpandedTextAd) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		Path1:               ad.Path1,
 		Path2:               ad.Path2,
 		FinalUrls:           ad.FinalUrls,
+		FinalMobileUrls:     []string{},
 		TrackingUrlTemplate: ad.TrackingUrlTemplate,
 	}, xml.StartElement{
-		xml.Name{"", "ad"},
-		[]xml.Attr{
-			xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "ExpandedTextAd"},
+		Name: xml.Name{Space: "", Local: "ad"},
+		Attr: []xml.Attr{
+			{
+				Name:  xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"},
+				Value: "ExpandedTextAd",
+			},
 		},
 	})
-	e.EncodeElement(ad.Status, xml.StartElement{Name: xml.Name{"", "status"}})
-	e.EncodeElement(ad.Labels, xml.StartElement{Name: xml.Name{"", "labels"}})
+	e.EncodeElement(ad.Status, xml.StartElement{Name: xml.Name{Space: "", Local: "status"}})
+	e.EncodeElement(ad.Labels, xml.StartElement{Name: xml.Name{Space: "", Local: "labels"}})
 
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
 type DynamicSettings struct {
-	landscapeLogoImage Media  `xml:"landscapeLogoImage"`
-	pricePrefix        string `xml:"pricePrefix"`
-	promoText          string `xml:"promoText"`
+	LandscapeLogoImage Media  `xml:"landscapeLogoImage"`
+	PricePrefix        string `xml:"pricePrefix"`
+	PromoText          string `xml:"promoText"`
 }
 
 type ResponsiveDisplayAd struct {
@@ -455,10 +465,10 @@ type UrlList struct {
 }
 
 type UrlData struct {
-	urlId               string  `xml:"urlId"`
-	finalUrls           UrlList `xml:"finalUrls,omitempty"`
-	finalMobileUrls     UrlList `xml:"finalMobileUrls,omitempty"`
-	trackingUrlTemplate string  `xml:"trackingUrlTemplate,omitempty"`
+	UrlId               string  `xml:"urlId"`
+	FinalUrls           UrlList `xml:"finalUrls,omitempty"`
+	FinalMobileUrls     UrlList `xml:"finalMobileUrls,omitempty"`
+	TrackingUrlTemplate string  `xml:"trackingUrlTemplate,omitempty"`
 }
 
 type GoalOptimizedShoppingAd struct {
@@ -620,9 +630,9 @@ type DisplayCallToAction struct {
 }
 
 type ProductImage struct {
-	productImage        *Media               `xml:"productImage"`
-	description         string               `xml:"description"`
-	displayCallToAction *DisplayCallToAction `xml:" displayCallToAction "`
+	ProductImage        *Media               `xml:"productImage"`
+	Description         string               `xml:"description"`
+	DisplayCallToAction *DisplayCallToAction `xml:"displayCallToAction"`
 }
 
 type GmailAd struct {

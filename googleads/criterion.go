@@ -53,8 +53,8 @@ type AgeRangeCriterion struct {
 
 type CarrierCriterion struct {
 	Id          int64  `xml:"id,omitempty"`
-	Name        string `xml:"name,emitempty"`
-	CountryCode string `xml:"countryCode,emitempty"`
+	Name        string `xml:"name,omitempty"`
+	CountryCode string `xml:"countryCode,omitempty"`
 }
 
 type ContentLabelCriterion struct {

@@ -172,7 +172,7 @@ type ErrorsType struct {
 func (f ErrorsType) Error() string {
 	errors := []string{}
 	for _, e := range f.ApiExceptionFaults {
-		errors = append(errors, fmt.Sprintf("%s", e.Message))
+		errors = append(errors, e.Message)
 	}
 	return strings.Join(errors, "\n")
 }
